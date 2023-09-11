@@ -1,0 +1,129 @@
+{% extends "exercise/layout.html" %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+    <main class="container">
+        <div class="d-flex justify-content-end p-3">
+            <!-- This button will open the add product modal -->
+            <button type="button" class="btn btn-dark btn-lg" data-toggle="modal" data-target="#add">
+                Add Product
+            </button>
+        </div>
+        
+        <!-- Table for displaying current stocks -->
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Product Name</th>
+                    <th>Date Added</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <!-- For each item in stocks/inventory create a new row and a separate edit modal -->
+            <tbody>
+                {% for product in inventory %}
+                <tr>
+                    <td class="font-weight-bold">{{product.name}}</td>
+                    <td>{{product.date_added}}</td>
+                    <td>{{product.category}}</td>
+                    <td>{{product.price}}</td>
+                    <td>{{product.quantity}}</td>
+                    <td><button type="button" class="btn btn-default badge-dark" data-toggle="modal" data-target="#edit-{{product.id}}">Edit</button></td>
+                    <td><button type="button" class="btn btn-default badge-danger" data-toggle="modal" data-target="#delete-{{product.id}}">Delete</button></td>
+
+                </tr>
+            </tbody>
+            {% endfor %}
+        </table>
+
+        <!-- Add Product Modal -->
+        <div class="modal fade" id="add">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Product</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <form action="add_product" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="modal-body form-group">
+                            <div class="form-control">
+                                <label for="add_name">{% render_field form.name.label %}</label>
+                                {% render_field form.name class="form-control" type="text" id="add_name" %}
+                                <label for="add_name">{% render_field form.category.label %}</label>
+                                {% render_field form.category class="form-control" type="text" id="add_category" %}
+                                <label for="add_name">{% render_field form.price.label %}</label>
+                                {% render_field form.price class="form-control" type="number" id="add_price" %}
+                                <label for="add_name">{% render_field form.quantity.label %}</label>
+                                {% render_field form.quantity class="form-control" type="number" id="add_quantity" %}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-info">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update product modals -->
+        {% for product in edits %}
+        <div class="modal fade" id="edit-{{product.stock.id}}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Product</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <form action="update/{{product.stock.id}}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-control">
+                            <label for="add_name">{% render_field item.form.name.label %}</label>
+                            {% render_field item.form.name class="form-control" type="text" id="add_name" %}
+                            <label for="add_name">{% render_field item.form.category.label %}</label>
+                            {% render_field item.form.category class="form-control" type="text" id="add_category" %}
+                            <label for="add_name">{% render_field item.form.price.label %}</label>
+                            {% render_field item.form.price class="form-control" type="number" id="add_price" %}
+                            <label for="add_name">{% render_field item.form.quantity.label %}</label>
+                            {% render_field item.form.quantity class="form-control" type="number" id="add_quantity" %}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-info">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- Confirm Delete Modal -->
+        {% for product in inventory %}
+        <div class="modal fade" id="delete-{{product.id}}">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm delete</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form action="delete/{{product.id}}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">Are you sure you want to delete <b>{{item.name}}</b>?</div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">Confirm</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+    </main>
+
+{% endblock content %}
