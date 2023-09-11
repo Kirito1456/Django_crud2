@@ -2,13 +2,30 @@ from django.shortcuts import render, redirect
 from .models import Product
 from .forms import ProductCreate
 from django.http import HttpResponse
+from django.template import loader
 # Create your views here.
 
 # READ
 def index(request):
-    inventory = Product.objects.all()
-    return render(request, 'product/index.html', {'inventory':inventory})
-
+    """
+        This function loads the initial view
+        Returns an HttpResponse to render the contents of the initial view
+    """ 
+    template=loader.get_template('product/index.html')
+    upload = ProductCreate()
+    edits = []
+    for product in Product.objects.all():
+        product_sel = Product.objects.get(id = product.id)
+        edits.append({
+            "form": ProductCreate(request.POST or None, instance=product_sel),
+            "product": product_sel
+        })
+    context = {
+        "form": upload,
+        "inventory": Product.objects.all(),
+        "edits": edits
+    }
+    return HttpResponse(template.render(context, request))
 # CREATE
 def add(request):
     """
