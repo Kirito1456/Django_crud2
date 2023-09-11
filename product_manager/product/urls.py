@@ -4,6 +4,8 @@ from. import views
 from product_manager.settings import DEBUG, STATIC_ROOT, STATIC_URL, MEDIA_ROOT, MEDIA_URL
 from django.conf.urls.static import static
 
+app_name = 'product'
+
 urlpatterns = [
     path('', views.index, name='index'),
     path('add/', views.add, name='add-product'),

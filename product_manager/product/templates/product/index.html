@@ -1,6 +1,6 @@
 {% extends "product/layout.html" %}
 {% load static %}
-{% load widget_tweaks %}
+
 
 {% block content %}
     <main class="container">
@@ -53,14 +53,14 @@
                         {% csrf_token %}
                         <div class="modal-body form-group">
                             <div class="form-control">
-                                <label for="add_name">{% render_field form.name.label %}</label>
-                                {% render_field form.name class="form-control" type="text" id="add_name" %}
-                                <label for="add_name">{% render_field form.category.label %}</label>
-                                {% render_field form.category class="form-control" type="text" id="add_category" %}
-                                <label for="add_name">{% render_field form.price.label %}</label>
-                                {% render_field form.price class="form-control" type="number" id="add_price" %}
-                                <label for="add_name">{% render_field form.quantity.label %}</label>
-                                {% render_field form.quantity class="form-control" type="number" id="add_quantity" %}
+                                <table class="table">
+                                    {% for field in form %}
+                                    <tr>
+                                        <th>{{ field.label }}</th>
+                                        <td>{{ field }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -84,14 +84,31 @@
                     <form action="update/{{product.stock.id}}" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="form-control">
-                            <label for="add_name">{% render_field item.form.name.label %}</label>
-                            {% render_field item.form.name class="form-control" type="text" id="add_name" %}
-                            <label for="add_name">{% render_field item.form.category.label %}</label>
-                            {% render_field item.form.category class="form-control" type="text" id="add_category" %}
-                            <label for="add_name">{% render_field item.form.price.label %}</label>
-                            {% render_field item.form.price class="form-control" type="number" id="add_price" %}
-                            <label for="add_name">{% render_field item.form.quantity.label %}</label>
-                            {% render_field item.form.quantity class="form-control" type="number" id="add_quantity" %}
+                            <table class="table">
+                                {% for field in form %}
+                                <tr>
+                                    <th>{{ field.label }}</th>
+                                    <!-- <td>{{ field }}</td> -->
+                                    <td>
+                                        {% if field.name == 'name' %}
+                                            <input type="text" name="{{ field.name }}" value="{{ update.product.name }}">
+                                        {% elif field.name == 'price' %}
+                                            <input type="number" name="{{ field.name }}" value="{{ update.product.price }}">
+                                        {% elif field.name == 'quantity' %}
+                                            <input type="number" name="{{ field.name }}" value="{{ update.product.quantity }}">    
+                                        {% elif field.name == 'category' %}
+                                            <select name="{{ field.name }}">
+                                                <option value="EL" {% if 'EL' == update.product.category %}selected{% endif %}>Electronics</option>
+                                                <option value="CL" {% if 'CL' == update.product.category %}selected{% endif %}>Clothing and Apparel</option>
+                                                <option value="FO" {% if 'FO' == update.product.category %}selected{% endif %}>Food</option>
+                                            </select>
+                                        {% else %}
+                                            {{ field }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </table>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

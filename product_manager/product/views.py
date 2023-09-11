@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Product
 from .forms import ProductCreate
 from django.http import HttpResponse
-from django.template import loader
+
 # Create your views here.
 
 # READ
@@ -11,7 +11,7 @@ def index(request):
         This function loads the initial view
         Returns an HttpResponse to render the contents of the initial view
     """ 
-    template=loader.get_template('product/index.html')
+    
     upload = ProductCreate()
     edits = []
     for product in Product.objects.all():
@@ -25,7 +25,7 @@ def index(request):
         "inventory": Product.objects.all(),
         "edits": edits
     }
-    return HttpResponse(template.render(context, request))
+    return render(request, 'product/index.html', context)
 # CREATE
 def add(request):
     """
@@ -38,11 +38,11 @@ def add(request):
         upload = ProductCreate(request.POST, request.FILES)
         if upload.is_valid():
             upload.save()
-            return redirect('index')
+            return redirect('product:index')
         else:
             return HttpResponse("your form is wrong, reload")
     else:
-        return render(request, 'product/index.html', {'upload_form':upload})
+        return redirect('product:index')
 
 # UPDATE
 def update_product(request, product_id):
@@ -50,12 +50,13 @@ def update_product(request, product_id):
     try:
         product_sel = Product.objects.get(id = product_id)
     except Product.DoesNotExist:
-        return redirect('index')
+        return redirect('product:index')
     product_form = ProductCreate(request.POST or None, instance=product_sel)
     if product_form.is_valid():    
         product_form.save()
-        return redirect('index')
-    return render(request, 'product/index.html', {'upload_form':product_form})
+        return redirect('product:index')
+    else:
+        return HttpResponse('''Error''')
 
 # DELETE
 def delete_product(request, product_id):
@@ -63,6 +64,6 @@ def delete_product(request, product_id):
     try:
         product_sel = Product.objects.get(id = product_id)
     except Product.DoesNotExist:
-        return redirect('index')
+        return redirect('product:index')
     product_sel.delete()
-    return redirect('index')
+    return redirect('product:index')
