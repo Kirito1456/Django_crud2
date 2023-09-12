@@ -8,7 +8,7 @@ class Product(models.Model):
     date_added = models.DateField(default= timezone.now())
     category = models.CharField(max_length=30, choices=[('Electronics', 'Electronics'), ('Clothing', 'Clothing'), ('Books', 'Books')])
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    quantity = models.IntegerField(default=1)
+    quantity = models.PositiveIntegerField(default=1)
 
     def __str__(self):
         return self.name
