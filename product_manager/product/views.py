@@ -9,7 +9,7 @@ from django.http import HttpResponse
 def index(request):
     """
         This function loads the initial view
-        Returns an HttpResponse to render the contents of the initial view
+        Also shows product information from the database
     """ 
     
     upload = ProductCreate()
@@ -26,12 +26,12 @@ def index(request):
         "edits": edits
     }
     return render(request, 'product/index.html', context)
+
 # CREATE
 def add(request):
     """
-        This function adds item in the database
-        Accepts a POST request
-        If form submitted is valid, it saves the item in the database and redirect to initial home view
+        Adds product in the database
+        If form submitted is valid, it saves the product in the database and redirect to initial home view
     """
     upload = ProductCreate()
     if request.method == 'POST':
@@ -46,6 +46,10 @@ def add(request):
 
 # UPDATE
 def update_product(request, product_id):
+    """
+        Updates product in the database
+        If form submitted is valid, it saves the product in the database and redirect to initial home view
+    """
     product_id = int(product_id)
     try:
         product_sel = Product.objects.get(id = product_id)
@@ -56,10 +60,13 @@ def update_product(request, product_id):
         product_form.save()
         return redirect('product:index')
     else:
-        return HttpResponse('''Error''')
+        return HttpResponse("your form is wrong, reload")
 
 # DELETE
 def delete_product(request, product_id):
+    """
+        Delete product in the database
+    """
     product_id = int(product_id)
     try:
         product_sel = Product.objects.get(id = product_id)

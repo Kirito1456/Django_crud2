@@ -11,7 +11,7 @@
             </button>
         </div>
         
-        <!-- Table for displaying current stocks -->
+        <!-- Table that shows all product informations-->
         <table class="table table-striped table-bordered table-hover ">
             <thead class="thead-dark">
                 <tr>
@@ -24,7 +24,7 @@
                     
                 </tr>
             </thead>
-            <!-- For each item in stocks/inventory create a new row and a separate edit modal -->
+            
             <tbody>
                 {% for product in inventory %}
                 <tr>
@@ -42,6 +42,7 @@
         </table>
 
         <!-- Add Product Modal -->
+        <!-- Allows user to add product in the database  -->
         <div class="modal fade" id="add">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -72,7 +73,8 @@
             </div>
         </div>
 
-        <!-- Update product modals -->
+        <!-- Update Modal  -->
+        <!-- Allows user to update product information in the database  -->
         {% for product in edits %}
         <div class="modal fade" id="edit-{{product.product.id}}">
             <div class="modal-dialog">
@@ -95,7 +97,7 @@
                                             <input type="text" name="{{ field.name }}" value="{{ product.product.name }}">
                                             
                                         {% elif field.label == 'Price' %}
-                                            <input type="number" name="{{ field.name }}" value="{{ product.product.price }}">
+                                            <input type="number" min="0.00" step="any" name="{{ field.name }}" value="{{ product.product.price }}">
                                         {% elif field.label == 'Quantity' %}
                                             <input type="number" name="{{ field.name }}" value="{{ product.product.quantity }}">    
                                         {% elif field.label == 'Category' %}
@@ -124,7 +126,8 @@
         </div>
         {% endfor %}
 
-        <!-- Confirm Delete Modal -->
+        <!-- Delete Modal -->
+        <!-- Allows user to permanently delete product in the database  -->
         {% for product in inventory %}
         <div class="modal fade" id="delete-{{product.id}}">
             <div class="modal-dialog">
