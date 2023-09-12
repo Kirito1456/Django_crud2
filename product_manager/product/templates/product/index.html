@@ -20,8 +20,8 @@
                     <th>Category</th>
                     <th>Price</th>
                     <th>Quantity</th>
-                    <th></th>
-                    <th></th>
+                    <th colspan="2" style="text-align: center;">Action</th>
+                    
                 </tr>
             </thead>
             <!-- For each item in stocks/inventory create a new row and a separate edit modal -->
@@ -74,37 +74,41 @@
 
         <!-- Update product modals -->
         {% for product in edits %}
-        <div class="modal fade" id="edit-{{product.stock.id}}">
+        <div class="modal fade" id="edit-{{product.product.id}}">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Add Product</h5>
+                        <h5 class="modal-title">Edit Product</h5>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
-                    <form action="update/{{product.stock.id}}" method="POST" enctype="multipart/form-data">
+                    <form action="update/{{product.product.id}}" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="form-control">
                             <table class="table">
                                 {% for field in form %}
                                 <tr>
                                     <th>{{ field.label }}</th>
-                                    <!-- <td>{{ field }}</td> -->
+                                    
                                     <td>
-                                        {% if field.name == 'name' %}
-                                            <input type="text" name="{{ field.name }}" value="{{ update.product.name }}">
-                                        {% elif field.name == 'price' %}
-                                            <input type="number" name="{{ field.name }}" value="{{ update.product.price }}">
-                                        {% elif field.name == 'quantity' %}
-                                            <input type="number" name="{{ field.name }}" value="{{ update.product.quantity }}">    
-                                        {% elif field.name == 'category' %}
+                                        
+                                        {% if field.label == 'Name' %}
+                                            <input type="text" name="{{ field.name }}" value="{{ product.product.name }}">
+                                            
+                                        {% elif field.label == 'Price' %}
+                                            <input type="number" name="{{ field.name }}" value="{{ product.product.price }}">
+                                        {% elif field.label == 'Quantity' %}
+                                            <input type="number" name="{{ field.name }}" value="{{ product.product.quantity }}">    
+                                        {% elif field.label == 'Category' %}
                                             <select name="{{ field.name }}">
-                                                <option value="EL" {% if 'EL' == update.product.category %}selected{% endif %}>Electronics</option>
-                                                <option value="CL" {% if 'CL' == update.product.category %}selected{% endif %}>Clothing and Apparel</option>
-                                                <option value="FO" {% if 'FO' == update.product.category %}selected{% endif %}>Food</option>
+                                                <option value="Electronics" {% if 'Electronics' == product.product.category %}selected{% endif %}>Electronics</option>
+                                                <option value="Clothing" {% if 'Clothing' == product.product.category %}selected{% endif %}>Clothing</option>
+                                                <option value="Books" {% if 'Books' == product.product.category %}selected{% endif %}>Books</option>
                                             </select>
                                         {% else %}
                                             {{ field }}
                                         {% endif %}
+                                        
+                                        
                                     </td>
                                 </tr>
                                 {% endfor %}
